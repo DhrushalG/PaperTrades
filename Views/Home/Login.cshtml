@@ -1,0 +1,18 @@
+@model LogUser
+<form action="/login" method="post">
+    <div class="form-group">
+        <label for="LUserName">UserName</label>
+        @* <input asp-for="LUserName" class="form-control" value="Drew1"> *@
+        <input asp-for="LUserName" class="form-control">
+        <span asp-validation-for="LUserName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="LPassword">Password</label>
+        <input asp-for="LPassword" class="form-control" value="password">
+        @* <input asp-for="LPassword" class="form-control"> *@
+        <span asp-validation-for="LPassword" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Log In" class="btn btn-danger">
+    </div>
+</form>

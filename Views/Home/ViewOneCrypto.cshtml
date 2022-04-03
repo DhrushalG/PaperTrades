@@ -1,0 +1,196 @@
+@model Wallet
+
+<div class="container">
+    @{
+        foreach (var c in @ViewBag.AllCryptos)
+        {
+            if (c.id == @Model.IsTracking)
+            {
+                <div class="mt-5 mb-2 d-flex justify-content-between">
+                    <div class="card text-white bg-dark" style="max-width: 50%;">
+                        <div class="card-header font-weight-italics">
+                            <h3>My @c.name</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table text-white table-sm">
+                                <thead>
+                                    <th>Avg Price</th>
+                                    <th>Quantity</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        @{
+                                            if(@Model.AvgBuyingPrice < 1 ){
+                                                <td>$@Model.AvgBuyingPrice.ToString("#,##0.#######")</td>
+                                            } else {
+                                                <td>$@Model.AvgBuyingPrice.ToString("#,##0.###")</td>
+                                            }
+                                        }
+                                        <td>@Model.Quantity.ToString("#,##0.###")</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Current Price</th>
+                                        <th>Current Value</th>
+                                    </tr>
+                                    <tr>
+                                        @{
+                                            double currprice = @c.current_price;
+                                            double currquant = @Model.Quantity;
+                                            double currval = currprice * currquant;
+                                        }
+                                        @{
+                                            if( currprice < 1){
+                                                <td>$@c.current_price.ToString("#,##0.#######")</td>
+                                            }else{
+                                                <td>$@c.current_price.ToString("#,##0.###")</td>
+                                            }
+                                        }
+                                        <td>$@currval.ToString("#,##0.###")</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <table class="table table-striped ml-5 mb-5" style="max-width: 50%;">
+                        <thead>
+                            <th>Price Change (24hr)</th>
+                            <th>High / Low (24hr)</th>
+                            <th>Circulating / Total Supply</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>$@c.price_change_24h.ToString("#,##0.###") <hr> @c.price_change_percentage_24h.ToString("#,##0.###")%</td>
+                                <td>$@c.high_24h.ToString("#,##0.###") <hr> $@c.low_24h.ToString("#,##0.###")</td>
+                                <td>
+                                    @c.circulating_supply.ToString("#,##0.###") <hr>
+                                    @{
+                                        if (@c.total_supply == null)
+                                        {
+                                            <Label class="text-danger">Data DNE</Label>
+                                        }
+                                        else
+                                        {
+                                            @c.total_supply.ToString("#,##0.###")
+                                        }
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-flex">
+                    
+                    <div style="height: 500px;" class="mr-5">
+                        
+                        <table class="table table-striped" style="width: 55%;">
+                            
+                            <thead>
+                                <th>Date</th>
+                                @* <th>Gain</th>
+                                <th>Loss</th>
+                                <th>Quantity</th>
+                                <th>Crypto Price</th>
+                                <th>Value</th> *@
+                                <th>Transaction Statement</th>
+                            </thead>
+                        </table>
+                        @if(@Model.myReceipts.Count >= 1)
+                            {
+                                <div style="height: 300px; width: 110%; overflow-y: scroll;">
+                                <table class="table table-striped bg-dark">
+                                    <caption class="font-weight-bold">Transaction History</caption>
+                                    <tbody>
+                                        @{
+                                            foreach(Receipt r in @Model.myReceipts)
+                                            {
+                                            <tr>
+                                                <td class="text-white">@r.CreatedAt.Month / @r.CreatedAt.Day</td>
+                                                @* <td class="text-white">$@r.Gain.ToString("#,##0.######")</td>
+                                                <td class="text-white">$@r.Loss.ToString("#,##0.###")</td>
+                                                <td class="text-white">@r.Quantity.ToString("#,##0.###")</td>
+                                                @{
+                                                    if( r.TransactionPrice < 1 )
+                                                        {
+                                                            <td class="text-white">$@r.TransactionPrice.ToString("#,##0.######")</td>
+                                                        } else {
+                                                            <td class="text-white">$@r.TransactionPrice.ToString("#,##0.###")</td>
+                                                        }
+                                                }
+                                                    
+                                                <td class="text-white">$@r.Value.ToString("#,##0.###")</td> *@
+                                                @{
+                                                    if( @r.Gain == 0 && @r.Loss == 0)
+                                                    { 
+                                                        if( r.TransactionPrice < 1 )
+                                                            {
+                                                                <td class="text-info">@r.Owner.Name bought @r.Quantity coins of @c.name at $@r.TransactionPrice.ToString("#,##0.######") for a total of $@r.Value.ToString("#,##0.###")</td>
+                                                            } else {
+                                                                <td class="text-info">@r.Owner.Name bought @r.Quantity coins of @c.name at $@r.TransactionPrice.ToString("#,##0.###") for a total of $@r.Value.ToString("#,##0.###")</td>
+                                                            }
+                                                    } else {
+                                                        if ( @r.Gain != 0)
+                                                            {
+                                                                if( @c.current_price < 1){
+                                                                    <td class="text-success">@r.Owner.Name sold @r.Quantity coins of @c.name at $@c.current_price.ToString("#,##0.######") for a total of $@r.Value.ToString("#,##0.###") making $@r.Gain.ToString("#,##0.###")</td>
+                                                                }else{
+                                                                    <td class="text-success">@r.Owner.Name sold @r.Quantity coins of @c.name at $@c.current_price.ToString("#,##0.###") for a total of $@r.Value.ToString("#,##0.###") making $@r.Gain.ToString("#,##0.###")</td>
+                                                                }
+                                                            } 
+                                                            else if ( @r.Loss != 0)
+                                                            {
+                                                                if( @c.current_price < 1){
+                                                                    <td class="text-danger">@r.Owner.Name sold @r.Quantity coins of @c.name at $@c.current_price.ToString("#,##0.######") for a total of $@r.Value.ToString("#,##0.###") losing $@r.Loss.ToString("#,##0.###")</td>
+                                                                }else{
+                                                                    <td class="text-danger">@r.Owner.Name sold @r.Quantity coins of @c.name at $@c.current_price.ToString("#,##0.###") for a total of $@r.Value.ToString("#,##0.###") losing $@r.Loss.ToString("#,##0.###")</td>
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                            </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            }
+                            
+                        </div>
+                    <div>
+                        <p>
+                            <a class="btn btn-success" data-toggle="collapse" href="#multiCollapseExample1" role="button">Buy more Crypto</a>
+                            <button class="btn btn-danger" type="button" data-toggle="collapse" data-target="#multiCollapseExample2">Sell Crypto</button>
+                            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse">Toggle</button>
+                        </p>
+                        <div class="d-flex justify-content-around">
+                            <div class="collapse multi-collapse" style="max-width: 40%;" id="multiCollapseExample1">
+                                <div class="card card-body bg-secondary">
+                                    <form action="/buy/@c.id" class="form-group" method="post">
+                                        <label for="Quantity">Quantity</label>
+                                        <input type="number" step=".001" class="form-control" name="Quantity" for="Quantity">
+                                        <input type="hidden" value="@Model.UserId" name="UserId" for="UserId">
+                                        <input type="hidden" value="@Model.WalletId" name="WalletId" for="WalletId">
+                                        <input type="hidden" value="@c.current_price" name="TransactionPrice" for="TransactionPrice">
+                                        <input type="hidden" value="@DateTime.Now" for="UpdatedAt" name="UpdatedAt"/>      <input class="btn btn-success my-2" type="Submit" value="Buy Crypto">
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="collapse multi-collapse" style="max-width: 40%;" id="multiCollapseExample2">
+                                <div class="card card-body bg-secondary">
+                                    <form action="/sell/@c.id" class="form-group" method="post">
+                                        <label for="Quantity">Quantity</label>
+                                        <input type="number" step=".001" name="Quantity" class="form-control" for="Quantity">
+                                        <input type="hidden" value="@Model.UserId" name="UserId" for="UserId">
+                                        <input type="hidden" value="@Model.WalletId" name="WalletId" for="WalletId">
+                                        <input type="hidden" value="@c.current_price" name="TransactionPrice" for="TransactionPrice">
+                                        <input type="hidden" value="@DateTime.Now" for="UpdatedAt" name="UpdatedAt"/>
+                                        <input class="btn btn-danger my-2" type="Submit" value="Sell Crypto">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    }
+</div>

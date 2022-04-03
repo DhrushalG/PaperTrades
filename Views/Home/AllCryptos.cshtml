@@ -1,0 +1,71 @@
+@* @model User *@
+<div class="container">
+    <h3 class="my- 5">List of Cryptos<hr></h3>
+    <div class="mt-5 d-flex flex-wrap justify-content-center">
+        @{
+            foreach (var c in @ViewBag.AllCryptos)
+            {
+                <div class="card m-1 bg-dark text-white" style="width: 16rem;">
+                        <div class="card-header d-flex justify-content-around btn border-none text-primary shadow-none" type="button" data-toggle="collapse" data-target="#@c.id">
+                            <img class="card-img-top" style="height: 50px; width: 50px;" src="@c.image" alt="Card image cap">
+                            <label class="ml-1 mt-2">@c.name</label>
+                        </div>
+                    <div class="card-body collapse" id="@c.id">
+                        <h5 class="card-title">$@c.current_price</h5>
+                        <ul class="list-group list-group-flush ">
+                            <li class="list-group-item bg-dark text-white">
+                                <label class="font-weight-bold">Price Change(24h)</label> <br>
+                                $@c.price_change_24h <br class="my-1">
+                                @c.price_change_percentage_24h%
+                            </li>
+                            <li class="list-group-item bg-dark text-white">
+                                <label class="font-weight-bold">High/Low(24h)</label> <br>
+                                $@c.high_24h / $@c.low_24h
+                            </li>
+                            <li class="list-group-item bg-dark text-white">
+                                <label class="font-weight-bold">Circulating/Total Supply</label> <br>
+                                @c.circulating_supply <hr>
+                                @{
+                                    if(@c.total_supply == null)
+                                {
+                                    <Label class="text-danger">Data DNE</Label>
+                                } else {
+                                    @c.total_supply
+                                }
+                                }
+                            </li>
+                        </ul>
+                        <div class="card-body d-flex justify-content-center">
+                                @{
+                                    if(@ViewBag.loggedIn != false)
+                                    {
+                                        <Button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".@c.id">Track Crypto</Button>
+                                        @* <Button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#@c.name">Buy Crypto</Button> *@
+                                        <div class="collapse @c.id">
+                                            <form action="new" method="post">
+                                                @* <div class="form-group">
+                                                    <label for="Quantity">Quantity: </label>
+                                                    <input for="Quantity" name="Quantity" class="form-control">
+                                                </div> *@
+                                                <input type="hidden" value=0 name="Quantity" for="Quantity">
+                                                <input type="hidden" value="@c.current_price" name="BuyInPrice" for="BuyInPrice">
+                                                <input type="hidden" value="@c.current_price" name="CurrPrice" for="CurrPrice">
+                                                <input type="hidden" value="@c.id" name="isTracking" for="isTracking">
+                                                <input type="hidden" value=0 name="Profit" for="Profit">
+                                                <input type="hidden" value=@Model.UserId name="UserId" for="UserId">
+                                                <input type="submit" class="btn btn-success" value="Add Wallet">
+                                            </form>
+                                        </div>
+                                    } else
+                                    {
+                                        <a class="btn btn-info" href="/">Login/Register</a>
+                                        
+                                    }
+                                }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
