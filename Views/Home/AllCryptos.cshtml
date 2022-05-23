@@ -11,26 +11,48 @@
                             <label class="ml-1 mt-2">@c.name</label>
                         </div>
                     <div class="card-body collapse" id="@c.id">
-                        <h5 class="card-title">$@c.current_price</h5>
+                        @{
+                            if(c.current_price <= 1)
+                            {
+                                <h5 class="card-title">$@c.current_price.ToString("#,##0.######")</h5>
+                            } else {
+                                <h5 class="card-title">$@c.current_price.ToString("#,##0.####")</h5>
+                            }
+                        }
                         <ul class="list-group list-group-flush ">
                             <li class="list-group-item bg-dark text-white">
                                 <label class="font-weight-bold">Price Change(24h)</label> <br>
-                                $@c.price_change_24h <br class="my-1">
-                                @c.price_change_percentage_24h%
+                                @{
+                                    if(c.price_change_24h <= 1)
+                                    {
+                                        <p>$@c.price_change_24h.ToString("#,##0.######") <br class="my-1">
+                                        @c.price_change_percentage_24h%</p> 
+                                    } else {
+                                        <p>$@c.price_change_24h.ToString("#,##0.####") <br class="my-1">
+                                        @c.price_change_percentage_24h% </p>
+                                    }
+                                }
                             </li>
                             <li class="list-group-item bg-dark text-white">
                                 <label class="font-weight-bold">High/Low(24h)</label> <br>
-                                $@c.high_24h / $@c.low_24h
+                                @{
+                                    if(c.high_24h <= 1 || c.low_24h <= 1)
+                                    {
+                                        <p>$@c.high_24h.ToString("#,##0.######") / $@c.low_24h.ToString("#,##0.######")</p>
+                                    } else {
+                                        <p>$@c.high_24h.ToString("#,##0.##") / $@c.low_24h.ToString("#,##0.##")</p>
+                                    }
+                                }
                             </li>
                             <li class="list-group-item bg-dark text-white">
                                 <label class="font-weight-bold">Circulating/Total Supply</label> <br>
-                                @c.circulating_supply <hr>
+                                @c.circulating_supply.ToString("#,##0.###") <hr>
                                 @{
                                     if(@c.total_supply == null)
                                 {
                                     <Label class="text-danger">Data DNE</Label>
                                 } else {
-                                    @c.total_supply
+                                    @c.total_supply.ToString("#,##0")
                                 }
                                 }
                             </li>

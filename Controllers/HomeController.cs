@@ -136,7 +136,7 @@ namespace PaperTrades.Controllers
             }
             else
             {
-                //Get all cryptos by bolume desc
+                //Get all cryptos by volume desc
                 string APIinfo = String.Format("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=100&page=1&sparkline=false");
                 WebRequest requestObj = WebRequest.Create(APIinfo);
                 //requestObj.Method = "GET";
@@ -220,11 +220,7 @@ namespace PaperTrades.Controllers
                 .Include(s => s.myReceipts)
                 .ThenInclude(s => s.Owner)
                 .FirstOrDefault(s => s.UserId == uid && s.IsTracking == cid );
-
-                // ViewBag.myRecieipts = _context.Receipts
-                // .Include(s => s.UserId == uid && s.WalletId == wallet.WalletId)
-                // .OrderByDescending(s => s.CreatedAt.Date);
-                return View(wallet);
+                return View("ViewOneCrypto", wallet);
             }
         }
 
@@ -240,8 +236,6 @@ namespace PaperTrades.Controllers
             }
             else
             {
-                //     ViewBag.OneUser = _context.Users
-                // .FirstOrDefault(d => d.UserName == UserName);
                 _context.Wallets.Add(newWall);
                 _context.SaveChanges();
 
@@ -258,9 +252,27 @@ namespace PaperTrades.Controllers
             string UserName = HttpContext.Session.GetString("UserName");
             User loggedIn = _context.Users
             .FirstOrDefault(d => d.UserName == UserName);
+
+            string APIinfo = String.Format("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false");
+                WebRequest requestObj = WebRequest.Create(APIinfo);
+                //requestObj.Method = "GET";
+                HttpWebResponse responseObj = null;
+                responseObj = (HttpWebResponse)requestObj.GetResponse();
+                string strResult = null;
+                using (Stream stream = responseObj.GetResponseStream())
+                {
+                    StreamReader sr = new StreamReader(stream);
+                    strResult = sr.ReadToEnd();
+                    sr.Close();
+                }
+                ViewBag.AllCryptos = JsonConvert
+                .DeserializeObject(strResult);
             
             Wallet original = _context.Wallets
-            .FirstOrDefault(s => s.IsTracking == cid);
+            .Include(s => s.myReceipts)
+            .ThenInclude(s => s.Owner)
+            .FirstOrDefault(s => s.IsTracking == cid && s.UserId == loggedIn.UserId);
+            
             if( ModelState.IsValid)
             {
                 newRec.Value = newRec.Quantity * newRec.TransactionPrice;
@@ -273,41 +285,39 @@ namespace PaperTrades.Controllers
                     .OrderByDescending(s => s.CreatedAt)
                     .FirstOrDefault(s => s.UserId == loggedIn.UserId && s.WalletId == original.WalletId);
                 }else {
-                // return RedirectToAction("ViewOneCrypto", original.IsTracking, loggedIn.UserId);
-                return RedirectToAction("Dashboard");
+                // return View("ViewOneCrypto", original);
+                return RedirectToAction("ViewOneCrypto", new {uid =loggedIn.UserId, cid = cid} );
             }
             }
-            // loggedIn.BuyingPwr -= newRec.Value;
-            // _context.SaveChanges();
+            loggedIn.BuyingPwr -= newRec.Value;
             ViewBag.AllRec = _context.Receipts;
             double sumTotal = 0;
             double count = 0;
             foreach( Receipt r in ViewBag.AllRec)
             {
-                if( r.WalletId == newRec.WalletId)
+                if( r.WalletId == newRec.WalletId && newRec.Gain == 0 && newRec.Loss == 0)
                 {
-                    sumTotal += r.TransactionPrice;
-                    count++;
-                    if (loggedIn.UserId == r.Owner.UserId)
-                    {
-                        if(r.Gain == 0 && r.Loss == 0)
-                        {
-                            loggedIn.BuyingPwr -= r.Value;
-                            // _context.SaveChanges();
-                        }
-                    }
+                    sumTotal += (r.TransactionPrice * r.Quantity);
+                    
                 }
-                // Console.WriteLine("Adding sumTotal: " + sumTotal);
+                else if ( r.WalletId == newRec.WalletId && newRec.Gain != 0 || newRec.Loss != 0)
+                {
+                    count += (r.Quantity * r.TransactionPrice);
+                }
             }
-            // Console.WriteLine("Pre-final sumTotal: " + sumTotal);
-            // sumTotal += original.BuyInPrice;
-            Console.WriteLine("Final sumTotal: " + sumTotal);
-            original.AvgBuyingPrice = (double)(sumTotal/count);
-            original.CurrPrice = newRec.TransactionPrice;
+            // Console.WriteLine("Final sumTotal: " + sumTotal);
             original.Quantity += newRec.Quantity;
+            // Console.WriteLine(original.Quantity);
+            original.AvgBuyingPrice = (double)((sumTotal - count) / original.Quantity);
+            original.CurrPrice = newRec.TransactionPrice;
+            
             original.UpdatedAt = newRec.UpdatedAt;
             _context.SaveChanges();
-            return RedirectToAction("Dashboard");
+            // int uid = loggedIn.UserId;
+            // Console.WriteLine(uid);
+            // return RedirectToAction("ViewOneCrypto", cid, loggedIn.UserId);
+            return RedirectToAction("ViewOneCrypto", new {uid =loggedIn.UserId, cid = cid} );
+            // return View("ViewOneCrypto", original);
         }
 
         [HttpPost("/sell/{cid}")]
@@ -317,38 +327,70 @@ namespace PaperTrades.Controllers
             User loggedIn = _context.Users
             .FirstOrDefault(d => d.UserName == UserName);
 
+            string APIinfo = String.Format("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false");
+                WebRequest requestObj = WebRequest.Create(APIinfo);
+                //requestObj.Method = "GET";
+                HttpWebResponse responseObj = null;
+                responseObj = (HttpWebResponse)requestObj.GetResponse();
+                string strResult = null;
+                using (Stream stream = responseObj.GetResponseStream())
+                {
+                    StreamReader sr = new StreamReader(stream);
+                    strResult = sr.ReadToEnd();
+                    sr.Close();
+                }
+                ViewBag.AllCryptos = JsonConvert
+                .DeserializeObject(strResult);
+
             Wallet original = _context.Wallets
-            .FirstOrDefault(s => s.IsTracking == cid.ToString());
-            if (newRec.TransactionPrice > original.AvgBuyingPrice)
-            {
-                newRec.Gain = (newRec.Quantity * newRec.TransactionPrice) - (newRec.Quantity * original.AvgBuyingPrice);
-            }
-            else
-            {
-                newRec.Loss = (newRec.Quantity * original.AvgBuyingPrice) - (newRec.Quantity * newRec.TransactionPrice);
-            }
-            _context.Receipts.Add(newRec);
-            _context.SaveChanges();
+            .Include(s => s.myReceipts)
+            .ThenInclude(s => s.Owner)
+            .FirstOrDefault(s => s.IsTracking == cid.ToString() && s.UserId == loggedIn.UserId);
 
-            Receipt currentRec = _context.Receipts
-            .OrderByDescending(s => s.CreatedAt)
-            .FirstOrDefault(s => s.UserId == loggedIn.UserId && s.WalletId == original.WalletId);
-            currentRec.Value = newRec.Quantity * newRec.TransactionPrice;
-            _context.SaveChanges();
+            if ( newRec.Quantity > original.Quantity)
+            {
+                return View("ViewOneCrypto", original);
+            } else {
+                if (newRec.TransactionPrice > original.AvgBuyingPrice)
+                {
+                    newRec.Gain = (newRec.Quantity * newRec.TransactionPrice) - (newRec.Quantity * original.AvgBuyingPrice);
+                }
+                else
+                {
+                    newRec.Loss = (newRec.Quantity * original.AvgBuyingPrice) - (newRec.Quantity * newRec.TransactionPrice);
+                }
 
-            original.CurrPrice = newRec.TransactionPrice;
-            original.Quantity -= newRec.Quantity;
-            original.UpdatedAt = newRec.UpdatedAt;
-            if (newRec.Gain > 0)
-            {
-                original.Profit += newRec.Gain;
+                _context.Receipts.Add(newRec);
+                _context.SaveChanges();
+
+                Receipt currentRec = _context.Receipts
+                .OrderByDescending(s => s.CreatedAt)
+                .FirstOrDefault(s => s.UserId == loggedIn.UserId && s.WalletId == original.WalletId);
+                currentRec.Value = newRec.Quantity * newRec.TransactionPrice;
+                loggedIn.BuyingPwr += currentRec.Value;
+                _context.SaveChanges();
+
+                original.CurrPrice = newRec.TransactionPrice;
+                original.Quantity -= newRec.Quantity;
+                if (original.Quantity == 0)
+                {
+                    original.AvgBuyingPrice = 0;
+                }
+                original.UpdatedAt = newRec.UpdatedAt;
+                if (newRec.Gain > 0)
+                {
+                    original.Profit += newRec.Gain;
+                    
+                }
+                else
+                {
+                    original.Profit -= newRec.Loss;
+                }
+                _context.SaveChanges();
+                return View("ViewOneCrypto", original);
             }
-            else
-            {
-                original.Profit -= newRec.Loss;
-            }
-            _context.SaveChanges();
-            return RedirectToAction("Dashboard");
+
+            
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

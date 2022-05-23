@@ -1,6 +1,6 @@
 @model User
 
-
+<link rel="stylesheet" href="~/css/style.css" type="text/css">
 <div class="container mt-5">
     <div class="d-flex justify-content-between">
         <h3>Welcome @Model.Name</h3>
@@ -13,8 +13,30 @@
             }
             <h3>Realized Profit: $@Total.ToString("#,###0.####")</h3>
             } *@
+            
             <h3>Buying Power: $@Model.BuyingPwr.ToString("#,##0.####")</h3>
         </div>
+        @{
+            double totalprof = 0;
+            foreach(Wallet w in @Model.myWallets)
+            {
+                totalprof += w.Profit;
+            }
+            double result = (Math.Abs(totalprof));
+            @* totalprof *= totalprof;
+            totalprof = totalprof / tot; *@
+            if ( totalprof >= 0)
+                {
+                    <div class="bg-dark p-1 px-2 rounded-3">
+                        <h3 class="text-success text-sm font-weight-light">Return: +$@result.ToString("#,##0.##")</h3>
+                    </div>
+                    
+                } else {
+                    <div class="bg-dark rounded-2 p-1">
+                        <h3 class="text-danger text-sm font-weight-light">Return: -$@result.ToString("#,##0.##")</h3>
+                    </div>
+                }
+            }
     </div>
     <hr>
     <div class="d-flex justify-content-between">
@@ -34,17 +56,17 @@
             }
         </div>
 
-        <div style="height: 500px; max-width: 30%;">
-        @* table for highest current price *@
-            <table class="table table-striped text-center">
+        <div class="" style="height: 500px; max-width: 30%;">
+        @* table for highest market cap *@
+            <table class="table table-striped text-center table-dark table-sm tablehead">
                 <thead>
-                    <th>Coin Name</th>
-                    <th>Market Cap</th>
+                    <th class="align-middle">Coin Name</th>
+                    <th class="align-middle">Market Cap</th>
                 </thead>
             </table>
-            <div style="height: 300px; width: 100%; overflow-y: scroll;">
-            <table class="table table-striped text-center">
-                <tbody>
+            <div class="scroller">
+            <table class="table table-striped text-center table-dark table-sm">
+                <tbody class="">
                     @{
                         foreach (var c in @ViewBag.AllCryptos3)
                         {
@@ -61,16 +83,16 @@
 
         <div class="" style="height: 500px; max-width: 30%;" >
         @* A table for cryptos ordered by volume *@
-            <table class="table table-striped text-center" >
+            <table class="table table-striped text-center table-dark table-sm tablehead">
                 <thead>
                     <tr>
-                        <th>Coin Name</th>
-                        <th>Volume</th>
+                        <th class="align-middle">Coin Name</th>
+                        <th class="align-middle">Volume</th>
                     </tr>
                 </thead>
             </table>
-            <div style="height: 300px; width: 100%; overflow-y: scroll;">
-                <table class="table table-striped text-center">
+            <div class="scroller">
+                <table class="table table-striped text-center table-dark table-sm">
                     <tbody>
                         @{
                             foreach (var c in @ViewBag.AllCryptos)
@@ -89,9 +111,9 @@
     </div>
 
     <div class="d-flex justify-content-between flex-wrap">
-        <div class="" style="height: 500px; width: 40%;">
+        <div class="" style="height: 500px; width: 45%;">
             @* Positives *@
-            <table class="table table-striped text-center">
+            <table class="table table-striped text-center table-dark table-sm tablehead">
                 <thead>
                         <th>Coin</th>
                         <th>1H</th>
@@ -100,8 +122,8 @@
                         <th>1M</th>
                 </thead>
             </table>
-            <div style="height: 300px; overflow-y: scroll;">
-                <table class="table table-striped text-center">
+            <div class="scroller">
+                <table class="table table-striped text-center table-dark table-sm">
                     <tbody>
                         @{
                             foreach (var c in @ViewBag.AllCryptos2)
@@ -122,9 +144,9 @@
                 </table>
             </div>
         </div>
-        <div style="height: 500px; width: 40%;">
+        <div style="height: 500px; width: 45%;">
             @* Negatives *@
-            <table class="table table-striped text-center">
+            <table class="table table-striped text-center table-dark table-sm tablehead">
                 <thead>
                         <th>Coin</th>
                         <th>1H</th>
@@ -133,8 +155,8 @@
                         <th>1M</th>
                 </thead>
             </table>
-            <div style="height: 300px; overflow-y: scroll;">
-                <table class="table table-striped text-center">
+            <div class="scroller">
+                <table class="table table-striped text-center table-dark table-sm">
                     <tbody>
                         @{
                             foreach (var c in @ViewBag.AllCryptos2)
