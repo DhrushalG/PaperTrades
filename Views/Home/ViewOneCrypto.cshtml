@@ -25,11 +25,12 @@
                                         @{
                                             double currprice = @c.current_price;
                                             double currquant = @Model.Quantity;
-                                            double currval = currprice * currquant;
                                             double differenceval = @c.current_price - @Model.AvgBuyingPrice;
-                                            double gainlossdec = differenceval / currprice;
-                                            double gainlossprct = gainlossdec * 100;
                                             double avg = @Model.AvgBuyingPrice * @Model.Quantity;
+                                            double currval = currprice * currquant;
+                                            double gainlossdec = (differenceval * currquant) / avg;
+                                            double gainlossprct = gainlossdec * 100;
+                                            
                                             double currret = (currprice * currquant) - avg;
                                         }
 
