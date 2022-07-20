@@ -1,0 +1,118 @@
+<div class="scroller">
+    <table class="table table-striped text-center table-dark table-sm ">
+        <thead>
+            <tr>
+                <th colspan="8">Monthly Movers</th>
+            </tr>
+            <th>Coin</th>
+            <th>Price</th>
+            <th>1H</th>
+            <th>1D</th>
+            <th>1W</th>
+            <th>1M</th>
+            <th>Market Cap<img src="~/css/images/DownArrow.png" class="ml-1" style="width: 15px; border-radius: 22px 22px;"></th>
+            <th>Volume</th>
+    </thead>
+        <tbody>
+            @{
+                foreach (var c in @ViewBag.AllCryptos2)
+                {
+                    <tr>
+                        @{
+                            if( c.price_change_percentage_30d_in_currency > 0)
+                            {
+                                <td class="align-middle"><img src="@c.image" style="height: 50px;" alt="@c.id"> <h5 class="fs-6">@c.name</h5></td>
+                                if (c.current_price <= 1)
+                                {
+                                    <td class="align-middle text-info">$@c.current_price.ToString("#,##0.#0####")</td>
+                                } else {
+                                    <td class="align-middle text-info">$@c.current_price.ToString("#,##0.#0")</td>
+                                }
+                                if (c.price_change_percentage_1h_in_currency >= 0) 
+                                {
+                                    <td class="align-middle text-success">+@c.price_change_percentage_1h_in_currency.ToString("#,##0.0#")%</td>
+                                } else {
+                                    <td class="align-middle text-danger">@c.price_change_percentage_1h_in_currency.ToString("#,##0.0#")%</td>
+                                }
+                                if (c.price_change_percentage_24h_in_currency >= 0) 
+                                {
+                                    <td class="align-middle text-success">+@c.price_change_percentage_24h_in_currency.ToString("#,##0.0#")%</td>
+                                } else {
+                                    <td class="align-middle text-danger">@c.price_change_percentage_24h_in_currency.ToString("#,##0.0#")%</td>
+                                }
+                                if (c.price_change_percentage_7d_in_currency >= 0) 
+                                {
+                                    <td class="align-middle text-success">+@c.price_change_percentage_7d_in_currency.ToString("#,##0.0#")%</td>
+                                } else {
+                                    <td class="align-middle text-danger">@c.price_change_percentage_7d_in_currency.ToString("#,##0.0#")%</td>
+                                }
+                                <td class="align-middle text-success">+@c.price_change_percentage_30d_in_currency.ToString("#,##0.0#")%</td>
+                                <td class="align-middle">@c.market_cap.ToString("#,##0.#")</td>
+                                <td class="align-middle">@c.total_volume.ToString("#,##0.#")</td>
+                            }
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<div class="mt-3 scroller">
+    <table class="table table-striped text-center table-dark table-sm">
+        <thead>
+            <tr>
+                <th colspan="8">Monthly Losers</th>
+            </tr>
+            <th>Coin</th>
+            <th>Price</th>
+            <th>1H</th>
+            <th>1D</th>
+            <th>1W</th>
+            <th>1M</th>
+            <th>Market Cap<img src="~/css/images/DownArrow.png" class="ml-1" style="width: 15px; border-radius: 22px 22px;"></th>
+            <th>Volume</th>
+    </thead>
+        <tbody>
+            @{
+                foreach (var c in @ViewBag.AllCryptos2)
+                {
+                    <tr>
+                        @{
+                            if( c.price_change_percentage_30d_in_currency < 0)
+                            {
+                                <td class="align-middle"><img src="@c.image" style="height: 50px;" alt="@c.id"> <h5 class="fs-6">@c.name</h5></td>
+                                if (c.current_price < 1)
+                                {
+                                    <td class="align-middle text-info">$@c.current_price.ToString("#,##0.#0####")</td>
+                                } else {
+                                    <td class="align-middle text-info">$@c.current_price.ToString("#,##0.#0")</td>
+                                }
+                                if (c.price_change_percentage_1h_in_currency >= 0) 
+                                {
+                                    <td class="align-middle text-success">+@c.price_change_percentage_1h_in_currency.ToString("#,##0.0#")%</td>
+                                } else {
+                                    <td class="align-middle text-danger">@c.price_change_percentage_1h_in_currency.ToString("#,##0.0#")%</td>
+                                }
+                                if (c.price_change_percentage_24h_in_currency >= 0) 
+                                {
+                                    <td class="align-middle text-success">+@c.price_change_percentage_24h_in_currency.ToString("#,##0.0#")%</td>
+                                } else {
+                                    <td class="align-middle text-danger">@c.price_change_percentage_24h_in_currency.ToString("#,##0.0#")%</td>
+                                }
+                                if (c.price_change_percentage_7d_in_currency >= 0) 
+                                {
+                                    <td class="align-middle text-success">+@c.price_change_percentage_7d_in_currency.ToString("#,##0.0#")%</td>
+                                } else {
+                                    <td class="align-middle text-danger">@c.price_change_percentage_7d_in_currency.ToString("#,##0.0#")%</td>
+                                }
+                                <td class="align-middle text-danger">@c.price_change_percentage_30d_in_currency.ToString("#,##0.0#")%</td>
+                                <td class="align-middle">@c.market_cap.ToString("#,##0.#")</td>
+                                <td class="align-middle">@c.total_volume.ToString("#,##0.#")</td>
+                            }
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

@@ -36,6 +36,8 @@ namespace PaperTrades.Models
         
 
         public double Loss { get; set; }
+
+        public string Order { get; set; }
         // {
         //     if(TransactionPrice < BuyInPrice)
         //     {

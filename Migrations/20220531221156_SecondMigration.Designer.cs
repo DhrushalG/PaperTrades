@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PaperTrades.Models;
 
 namespace PaperTrades.Migrations
 {
     [DbContext(typeof(MyContext))]
-    partial class MyContextModelSnapshot : ModelSnapshot
+    [Migration("20220531221156_SecondMigration")]
+    partial class SecondMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,8 +34,8 @@ namespace PaperTrades.Migrations
                     b.Property<double>("Loss")
                         .HasColumnType("double");
 
-                    b.Property<string>("Order")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
 
                     b.Property<double>("Quantity")
                         .HasColumnType("double");

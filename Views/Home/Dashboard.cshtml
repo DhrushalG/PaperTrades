@@ -1,191 +1,89 @@
 @model User
 
 <link rel="stylesheet" href="~/css/style.css" type="text/css">
-<div class="container mt-5">
+<meta http-equiv="refresh" content="90;" />
+<div class="container">
     <div class="d-flex justify-content-between">
-        <h3>Welcome @Model.Name</h3>
         <div>
-            @* @{
-            double Total = 0;
-            foreach(Wallet w in @Model.myWallets)
-            {
-                Total += w.Profit;
-            }
-            <h3>Realized Profit: $@Total.ToString("#,###0.####")</h3>
-            } *@
-            
-            <h3>Buying Power: $@Model.BuyingPwr.ToString("#,##0.####")</h3>
-        </div>
-        @{
-            double totalprof = 0;
-            foreach(Wallet w in @Model.myWallets)
-            {
-                totalprof += w.Profit;
-            }
-            double result = (Math.Abs(totalprof));
-            @* totalprof *= totalprof;
-            totalprof = totalprof / tot; *@
-            if ( totalprof >= 0)
-                {
-                    <div class="bg-dark p-1 px-2 rounded-3">
-                        <h3 class="text-success text-sm font-weight-light">Return: +$@result.ToString("#,##0.##")</h3>
-                    </div>
-                    
-                } else {
-                    <div class="bg-dark rounded-2 p-1">
-                        <h3 class="text-danger text-sm font-weight-light">Return: -$@result.ToString("#,##0.##")</h3>
-                    </div>
-                }
-            }
-    </div>
-    <hr>
-    <div class="d-flex justify-content-between">
-        <div class="d-flex justify-content-around flex-wrap" style="max-width: 30%; height: 80%;">
-            @{
-                foreach (var c in @ViewBag.AllCryptos)
-                {
-                    foreach(Wallet w in @Model.myWallets)
-                    {
-                        if (w.IsTracking == c.id.ToString())
-                        {
-                            <h3 class="mr-2" style="overflow: auto;"><a class="btn btn-sm border-none shadow-none font-weight-bold" href="/crypto/@Model.UserId/@c.id"><img src="@c.image" style="height: 50px;" alt="@c.id"><h5>@c.name</h5></a></h3>
-                        }
-                    }
-                    
-                }
-            }
-        </div>
-
-        <div class="" style="height: 500px; max-width: 30%;">
-        @* table for highest market cap *@
-            <table class="table table-striped text-center table-dark table-sm tablehead">
-                <thead>
-                    <th class="align-middle">Coin Name</th>
-                    <th class="align-middle">Market Cap</th>
-                </thead>
-            </table>
-            <div class="scroller">
-            <table class="table table-striped text-center table-dark table-sm">
-                <tbody class="">
+            <div class="ml-4 card bg-dark text-white viewonetable" style="width: 18rem;">
+                <div class="card-body text-center">
+                    <h5 class="card-title mb-2">Welcome @Model.Name</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Buying Power: $@Model.BuyingPwr.ToString("#,##0.#0")</h6>
                     @{
-                        foreach (var c in @ViewBag.AllCryptos3)
+                        double totalprof = 0;
+                        foreach(Wallet w in @Model.myWallets)
                         {
-                            <tr>
-                                <td class="align-middle"><img src="@c.image" style="height: 50px;" alt="@c.id"> <h5>@c.name</h5></td>
-                                <td class="align-middle"> @c.market_cap.ToString("#,##0")</td>
-                            </tr>
+                            if (w.Profit != 0){
+                                totalprof += w.Profit;
+                            }
+                        }
+                        double result = (Math.Abs(totalprof));
+                        if ( totalprof >= 0)
+                        {
+                            <p class="text-success text-sm font-weight-light">Actualized Return: +$@result.ToString("#,##0.#0")</p>
+                            
+                        } else {
+                            <p class="text-danger text-sm font-weight-light">Actualized Return: -$@result.ToString("#,##0.#0")</p>
                         }
                     }
-                </tbody>
-            </table>
+                    @* <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> *@
+                    @* <a href="#" class="card-link">Card link</a>
+                    <a href="#" class="card-link">Another link</a> *@
+                </div>
             </div>
-        </div>
 
-        <div class="" style="height: 500px; max-width: 30%;" >
-        @* A table for cryptos ordered by volume *@
-            <table class="table table-striped text-center table-dark table-sm tablehead">
-                <thead>
-                    <tr>
-                        <th class="align-middle">Coin Name</th>
-                        <th class="align-middle">Volume</th>
-                    </tr>
-                </thead>
-            </table>
-            <div class="scroller">
-                <table class="table table-striped text-center table-dark table-sm">
-                    <tbody>
-                        @{
-                            foreach (var c in @ViewBag.AllCryptos)
-                            {
-                                <tr>
-                                    <td class="align-middle"><img src="@c.image" style="height: 50px;" alt="@c.id"> <h5>@c.name</h5></td>
-                                    <td class="align-middle">@c.total_volume.ToString("#,##0")</td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="d-flex justify-content-between flex-wrap">
-        <div class="" style="height: 500px; width: 45%;">
-            @* Positives *@
-            <table class="table table-striped text-center table-dark table-sm tablehead">
-                <thead>
-                        <th>Coin</th>
-                        <th>1H</th>
-                        <th>1D</th>
-                        <th>1W</th>
-                        <th>1M</th>
-                </thead>
-            </table>
-            <div class="scroller">
-                <table class="table table-striped text-center table-dark table-sm">
+            <div class="mt-3" style="max-height: 400px; overflow-y: scroll; box-shadow: 0 10px 15px 0 rgba(0, 0, 0, .5); border-radius: 20px;">
+                <table class="table text-center table-dark table-hover table-sm">
+                    <thead>
+                        <th class="text-center">My Cryptocurrencies</th>
+                    </thead>
                     <tbody>
                         @{
                             foreach (var c in @ViewBag.AllCryptos2)
-                            {
-                                if( c.price_change_percentage_30d_in_currency > 0)
                                 {
-                                <tr>
-                                    <td class="align-middle"><img src="@c.image" style="height: 50px;" alt="@c.id"> <h5>@c.name</h5></td>
-                                    <td class="align-middle">@c.price_change_percentage_1h_in_currency.ToString("#,##0.0000")%</td>
-                                    <td class="align-middle">@c.price_change_percentage_24h_in_currency.ToString("#,##0.0000")%</td>
-                                    <td class="align-middle">@c.price_change_percentage_7d_in_currency.ToString("#,##0.0000")%</td>
-                                    <td class="align-middle">@c.price_change_percentage_30d_in_currency.ToString("#,##0.0000")%</td>
-                                </tr>
+                                foreach(Wallet w in @Model.myWallets)
+                                    {
+                                    if (w.IsTracking == c.id.ToString())
+                                        {
+                                            double currprice = @c.current_price;
+                                            double quant = @w.Quantity;
+                                            double avgpr = @w.AvgBuyingPrice;
+                                            double differenceval = currprice - avgpr;
+                                            double avgval = quant * avgpr;
+                                            double currval = (currprice * quant);
+                                            double net = currval - avgval;
+                                            double gainlossdec = (differenceval * quant) / avgval;
+                                            double gainlossprct = gainlossdec * 100;
+                                            <tr>
+                                                <td class="" colspan="2">
+                                                    <a class="d-flex btn btn-sm font-weight-bold text-white justify-content-around" style="width: 100%;" href="/crypto/@Model.UserId/@c.id">
+                                                        <img src="@c.image" style="height: 40px;" alt="@c.id">
+                                                        <label class="mt-2" style="width: 80px;"> @c.name </label>
+                                                        <label class="mt-2" style="width: 110px;">$@currval.ToString("#,##0.#0")</label>
+                                                        @{
+                                                            if (net >= 0){
+                                                                <label class="text-success">+$@net.ToString("#,##0.#0") <br>
+                                                                (+@gainlossprct.ToString("#,##0.#0")%)</label>
+                                                            } else {
+                                                                <label class="text-danger">-$@Math.Abs(net).ToString("#,##0.#0") <br>
+                                                                (@gainlossprct.ToString("#,##0.#0")%)</label>
+                                                            }
+                                                        }
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
                                 }
-                            }
                         }
                     </tbody>
                 </table>
             </div>
         </div>
-        <div style="height: 500px; width: 45%;">
-            @* Negatives *@
-            <table class="table table-striped text-center table-dark table-sm tablehead">
-                <thead>
-                        <th>Coin</th>
-                        <th>1H</th>
-                        <th>1D</th>
-                        <th>1W</th>
-                        <th>1M</th>
-                </thead>
-            </table>
-            <div class="scroller">
-                <table class="table table-striped text-center table-dark table-sm">
-                    <tbody>
-                        @{
-                            foreach (var c in @ViewBag.AllCryptos2)
-                            {
-                                if( c.price_change_percentage_30d_in_currency < 0)
-                                {
-                                <tr>
-                                    <td class="align-middle"><img src="@c.image" style="height: 50px;" alt="@c.id"> <h5>@c.name</h5></td>
-                                    <td class="align-middle">@c.price_change_percentage_1h_in_currency.ToString("#,##0.0000")%</td>
-                                    <td class="align-middle">@c.price_change_percentage_24h_in_currency.ToString("#,##0.0000")%</td>
-                                    <td class="align-middle">@c.price_change_percentage_7d_in_currency.ToString("#,##0.0000")%</td>
-                                    <td class="align-middle">@c.price_change_percentage_30d_in_currency.ToString("#,##0.0000")%</td>
-                                </tr>
-                                }
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
+        @* Right Column *@
+        <div class="" style="width: 65%;">
+            <partial name="Monthlys">
         </div>
     </div>
-    <div class="d-flex justify-content-center">
-        
-    </div>
+    <div style="min-height: 100px;"></div>
 </div>
-
-@* <script>
-    $(document).ready(function () {
-        $('#dtDynamicVerticalScrollExample').DataTable({"scrollY": "50vh", "scrollCollapse": true,});
-        $('.dataTables_length').addClass('bs-select');
-        });
-</script> *@

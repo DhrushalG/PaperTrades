@@ -1,4 +1,5 @@
 @* @model User *@
+<meta http-equiv="refresh" content="180;" />
 <div class="container">
     <h3 class="my- 5">List of Cryptos<hr></h3>
     <div class="mt-5 d-flex flex-wrap justify-content-center">
@@ -14,9 +15,9 @@
                         @{
                             if(c.current_price <= 1)
                             {
-                                <h5 class="card-title">$@c.current_price.ToString("#,##0.######")</h5>
+                                <h5 class="card-title text-info">$@c.current_price.ToString("#,##0.######")</h5>
                             } else {
-                                <h5 class="card-title">$@c.current_price.ToString("#,##0.####")</h5>
+                                <h5 class="card-title text-info">$@c.current_price.ToString("#,##0.####")</h5>
                             }
                         }
                         <ul class="list-group list-group-flush ">
@@ -90,4 +91,5 @@
             }
         }
     </div>
+    <div style="height: 100px;"></div>
 </div>

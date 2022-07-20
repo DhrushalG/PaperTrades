@@ -61,4 +61,7 @@ C:\Users\dhrus\OneDrive\Desktop\C#\PaperTrades\obj\Debug\netcoreapp3.1\PaperTrad
 C:\Users\dhrus\OneDrive\Desktop\C#\PaperTrades\obj\Debug\netcoreapp3.1\PaperTrades.genruntimeconfig.cache
 C:\Users\dhrus\OneDrive\Desktop\C#\PaperTrades\obj\Debug\netcoreapp3.1\Razor\Views\Home\AddWallet.cshtml.g.cs
 C:\Users\dhrus\OneDrive\Desktop\C#\PaperTrades\obj\Debug\netcoreapp3.1\Razor\Views\Home\AllCryptos.cshtml.g.cs
+C:\Users\dhrus\OneDrive\Desktop\C#\PaperTrades\obj\Debug\netcoreapp3.1\Razor\Views\Home\MarketOrder.cshtml.g.cs
+C:\Users\dhrus\OneDrive\Desktop\C#\PaperTrades\obj\Debug\netcoreapp3.1\Razor\Views\Home\Monthlys.cshtml.g.cs
+C:\Users\dhrus\OneDrive\Desktop\C#\PaperTrades\obj\Debug\netcoreapp3.1\Razor\Views\Home\Settings.cshtml.g.cs
 C:\Users\dhrus\OneDrive\Desktop\C#\PaperTrades\obj\Debug\netcoreapp3.1\Razor\Views\Home\ViewOneCrypto.cshtml.g.cs
